@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="fixed bottom-0 left-0 right-0 border-t border-[#e4e4e4] dark:border-[#1a1a1a] bg-[#f5f5f5] dark:bg-[#0a0a0a] px-8 py-4 z-50 transition-colors duration-200">
       <div className="max-w-[1200px] mx-auto flex items-center justify-between">
-        <span className="text-xs text-[#9ca3af] dark:text-[#3a3a3a]">AX Copy Studio · Internal Use Only</span>
+        <span className="text-xs text-[#9ca3af] dark:text-[#3a3a3a]">AXE Copy Studio · AX Enablement · Internal Use Only</span>
         <button
           onClick={toggle}
           className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#e4e4e4] dark:border-[#242424] bg-white dark:bg-[#141414] text-xs font-semibold text-[#6b7280] hover:border-[#d0d0d0] dark:hover:border-[#404040] transition-all"

@@ -1,7 +1,7 @@
 # Doc 1 — LG Brand Knowledge (copy)
 
 > **Job:** LG brand voice, tone, vocabulary, guardrails, and approved copy examples.
-> **Feeds:** Every copy generation in AX Copy Studio (read at request time — edits apply on the next generation).
+> **Feeds:** Every copy generation in AXE Copy Studio (read at request time — edits apply on the next generation).
 > **Owner:** Creative Director / Copy lead. **Changes:** rarely.
 >
 > Mirrors the brand voice in AX Platform's Doc 1. Asset-specific fields and character limits are

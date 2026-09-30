@@ -6,8 +6,8 @@ import Footer from '@/components/Footer';
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export const metadata = {
-  title: 'AX Copy Studio',
-  description: 'On-brand LG copy for promotional and retail assets',
+  title: 'AXE Copy Studio',
+  description: 'AX Enablement — on-brand LG copy for promotional and retail assets',
 };
 
 export default function RootLayout({ children }) {

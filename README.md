@@ -1,4 +1,6 @@
-# AX Copy Studio (prototype)
+# AXE Copy Studio (prototype)
+
+*Built by **AXE — AX Enablement**.*
 
 A standalone copywriting tool for the LG / HSAD copy team. Same workflow and brand brain as the
 AX Platform Copy Studio, but built around **specific copy asset types** (HP Hero, PLP Hero, content

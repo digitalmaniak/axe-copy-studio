@@ -163,7 +163,7 @@ export default function CopyStudio() {
   const assetText = (a, fields = {}) => [a.name, ...a.fields.filter((f) => fields[f.key]).map((f) => `${f.label}: ${fields[f.key]}`)].join('\n');
   const optionText = (o, i) => [`OPTION ${i + 1}${o.angle ? ` — ${o.angle}` : ''}`, '', ...result.assets.map((a) => assetText(a, o.assets[a.id]))].join('\n\n');
   const allText = () => [
-    'AX COPY STUDIO',
+    'AXE COPY STUDIO — AX ENABLEMENT',
     `Tone: ${tone} · ${result.options.length} option(s) · ${result.assets.length} asset(s)`,
     '',
     'BRIEF',
@@ -181,7 +181,7 @@ export default function CopyStudio() {
     const blob = new Blob([allText()], { type: 'text/plain;charset=utf-8' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `ax-copy-${new Date().toISOString().slice(0, 10)}.txt`;
+    a.download = `axe-copy-${new Date().toISOString().slice(0, 10)}.txt`;
     document.body.appendChild(a); a.click(); document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
   };
@@ -199,7 +199,7 @@ export default function CopyStudio() {
           <div className="w-9 h-9 bg-[#c8102e] rounded-xl flex items-center justify-center flex-shrink-0">
             <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={1.6} className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
           </div>
-          <span className="text-base font-bold tracking-wide">AX Copy Studio</span>
+          <span className="text-base font-bold tracking-wide">AXE Copy Studio</span>
           <span className="text-[10px] font-bold text-[#c8102e] border border-[#c8102e] rounded px-2 py-0.5 tracking-wide">Prototype</span>
         </div>
 

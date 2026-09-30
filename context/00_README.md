@@ -1,4 +1,4 @@
-# context/ — the editable brain of AX Copy Studio
+# context/ — the editable brain of AXE Copy Studio
 
 Two markdown docs drive every generation. They're read at request time, so edits apply on the
 next generation — no code change, no redeploy.
