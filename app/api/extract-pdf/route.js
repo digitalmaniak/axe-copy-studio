@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { PROVIDERS, resolveProvider } from '@/lib/llm';
+import { PROVIDERS, resolveProvider, CLAUDE_REQUEST_DEFAULTS } from '@/lib/llm';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -25,12 +25,13 @@ export async function POST(req) {
       const msg = await client.messages.create({
         model: PROVIDERS.claude.model,
         max_tokens: 4000,
+        ...CLAUDE_REQUEST_DEFAULTS,
         messages: [{ role: 'user', content: [
           { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64 } },
           { type: 'text', text: INSTRUCTION },
         ] }],
       });
-      text = (msg.content || []).map((b) => b.text || '').join('');
+      text = (msg.content || []).filter((b) => b.type === 'text').map((b) => b.text || '').join('');
     } else {
       const res = await fetch('https://api.openai.com/v1/responses', {
         method: 'POST',

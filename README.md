@@ -11,7 +11,7 @@ choose tone, number of options (1–3) and model → generate. Results show ever
 side by side; edit inline, redo a single field, replace one option, regenerate all, copy, or export.
 
 ## Stack
-Next.js 14 (App Router) · Tailwind · Anthropic Claude (default, `claude-opus-4-6`) · OpenAI GPT
+Next.js 14 (App Router) · Tailwind · Anthropic Claude (default, `claude-sonnet-5-5`) · OpenAI GPT
 (`gpt-5.4`, toggle) · Vercel. No database in v1 — nothing is stored server-side.
 
 ## Setup
