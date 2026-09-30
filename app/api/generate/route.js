@@ -39,6 +39,15 @@ function tooSimilar(options, prior) {
   return sigs.some((s) => priorSigs.some((p) => jaccard(s, p) > 0.55));
 }
 
+// True if any generated headline/body is (near-)verbatim one of that asset's approved examples.
+function echoesExamples(options, assets) {
+  return options.some((o) => assets.some((a) => ['headline', 'body'].some((k) => {
+    const out = norm(o.assets[a.id]?.[k]);
+    if (out.length < 4) return false;
+    return a.examples.some((e) => e.values[k] && jaccard(out, norm(e.values[k])) > 0.7);
+  })));
+}
+
 function findViolations(options, assets) {
   const out = [];
   options.forEach((o, oi) => assets.forEach((a) => a.fields.forEach((f) => {
@@ -76,24 +85,31 @@ export async function POST(request) {
     let options = await run(false);
     if (!options.length) throw new Error('The model returned no options — try again.');
 
-    // Options (or a regeneration) came back too alike → one harder retry.
-    if (varied && tooSimilar(options, prior)) {
-      try { const retry = await run(true); if (retry.length) options = retry; }
-      catch (e) { console.error('[/api/generate] divergence retry failed:', e.message); }
+    // Options too alike (to each other / to earlier ones), or copy lifted from the
+    // approved examples → one harder retry.
+    if ((varied && tooSimilar(options, prior)) || echoesExamples(options, assets)) {
+      try {
+        const retry = await run(true);
+        if (retry.length && !echoesExamples(retry, assets)) options = retry;
+        else if (retry.length && echoesExamples(options, assets)) options = retry;
+      } catch (e) { console.error('[/api/generate] divergence retry failed:', e.message); }
     }
 
-    // Any field over its hard character limit → one targeted repair pass.
-    const violations = findViolations(options, assets);
-    if (violations.length) {
+    // Fields over their hard character limit → up to two targeted repair rounds.
+    // A rewrite is kept if it fits, or (round 1) if it at least got shorter.
+    for (let round = 0; round < 2; round++) {
+      const violations = findViolations(options, assets);
+      if (!violations.length) break;
       try {
-        const raw = await callLLM({ provider, system, maxTokens: 400 + violations.length * 120, temperature: 0.3, user: buildRepairUser(violations) });
+        const raw = await callLLM({ provider, system, maxTokens: 500 + violations.length * 160, temperature: 0.3, user: buildRepairUser(violations) });
         const fixes = parseJSON(raw)?.fixes || [];
         for (const fix of fixes) {
           const v = violations[Number(fix?.i)];
           const value = String(fix?.value || '').trim();
-          if (v && value && value.length <= v.max) options[v.oi].assets[v.assetId][v.key] = value;
+          if (!v || !value) continue;
+          if (value.length <= v.max || value.length < v.value.length) options[v.oi].assets[v.assetId][v.key] = value;
         }
-      } catch (e) { console.error('[/api/generate] limit repair failed:', e.message); }
+      } catch (e) { console.error(`[/api/generate] limit repair round ${round + 1} failed:`, e.message); }
     }
 
     return Response.json({ success: true, options, assets, provider, model: PROVIDERS[provider].model });
