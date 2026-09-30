@@ -1,33 +1,9 @@
-'use client';
-import { useTheme } from '@/components/ThemeProvider';
-
 export default function Footer() {
-  const { theme, toggle } = useTheme();
   return (
-    <footer className="fixed bottom-0 left-0 right-0 border-t border-[#e4e4e4] dark:border-[#1a1a1a] bg-[#f5f5f5] dark:bg-[#0a0a0a] px-8 py-4 z-50 transition-colors duration-200">
-      <div className="max-w-[1200px] mx-auto flex items-center justify-between">
-        <span className="text-xs text-[#9ca3af] dark:text-[#3a3a3a]">AXE Copy Studio · AX Enablement · Internal Use Only</span>
-        <button
-          onClick={toggle}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#e4e4e4] dark:border-[#242424] bg-white dark:bg-[#141414] text-xs font-semibold text-[#6b7280] hover:border-[#d0d0d0] dark:hover:border-[#404040] transition-all"
-        >
-          {theme === 'light' ? (
-            <>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-3.5 h-3.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-              </svg>
-              Dark mode
-            </>
-          ) : (
-            <>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} className="w-3.5 h-3.5">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-              </svg>
-              Light mode
-            </>
-          )}
-        </button>
-        <span className="text-xs text-[#9ca3af] dark:text-[#3a3a3a]">AI-powered</span>
+    <footer className="border-t border-line dark:border-night-line px-8 py-5">
+      <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-4 text-xs text-faint dark:text-night-faint">
+        <span>AXE Copy Studio · AX Enablement · Internal Use Only</span>
+        <span>AI-powered · nothing is stored</span>
       </div>
     </footer>
   );

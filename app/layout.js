@@ -1,9 +1,10 @@
-import { Inter } from 'next/font/google';
+import { Schibsted_Grotesk, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import ThemeProvider from '@/components/ThemeProvider';
 import Footer from '@/components/Footer';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const sans = Schibsted_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'], variable: '--font-sans' });
+const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' });
 
 export const metadata = {
   title: 'AXE Copy Studio',
@@ -13,9 +14,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} font-sans antialiased bg-[#f5f5f5] dark:bg-[#0a0a0a] text-[#111111] dark:text-white transition-colors duration-200`}>
+      <body className={`${sans.variable} ${mono.variable} font-sans antialiased bg-paper dark:bg-night text-ink dark:text-night-ink transition-colors duration-200`}>
         <ThemeProvider>
-          <div className="pb-16">{children}</div>
+          {children}
           <Footer />
         </ThemeProvider>
       </body>

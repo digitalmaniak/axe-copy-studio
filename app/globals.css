@@ -2,18 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-/* Custom scrollbar — light */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #f5f5f5; }
-::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-
-/* Dark mode scrollbar */
-.dark ::-webkit-scrollbar-track { background: #0a0a0a; }
-.dark ::-webkit-scrollbar-thumb { background: #2a2a2a; }
-.dark ::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+/* Scrollbars */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D9D8D2; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #BDBCB6; }
+.dark ::-webkit-scrollbar-thumb { background: #33333A; }
+.dark ::-webkit-scrollbar-thumb:hover { background: #45454D; }
 
 /* Smooth theme transitions */
 * { transition-property: background-color, border-color, color; transition-duration: 150ms; }
