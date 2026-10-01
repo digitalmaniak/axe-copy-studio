@@ -46,7 +46,7 @@ function limitsSummary(a) {
   return a.fields.map((f) => `${f.label} ${f.max ?? '—'}`).join(' · ');
 }
 function assetMeta(a) {
-  return [a.dimensions, a.cta && `CTA: ${a.cta}`].filter(Boolean).join(' · ');
+  return a.cta ? `CTA: ${a.cta}` : '';
 }
 
 export default function CopyStudio() {
@@ -359,7 +359,6 @@ export default function CopyStudio() {
                         <span className="text-[13px] font-bold leading-snug">{a.name}</span>
                         <span className={`font-mono text-[11px] ${muted}`}>{limitsSummary(a)}</span>
                       </span>
-                      {a.dimensions && <span className="ml-auto font-mono text-[11px] text-faint dark:text-night-faint whitespace-nowrap">{a.dimensions.replace(/x/i, '×')}</span>}
                     </button>
                   );
                 })}
@@ -491,7 +490,7 @@ export default function CopyStudio() {
                 <section key={a.id} className={`${card} px-[22px] py-5 flex flex-col gap-4`}>
                   <div className="flex items-baseline justify-between gap-3 flex-wrap">
                     <h3 className="text-base font-extrabold tracking-[-0.01em]" title={a.placement || undefined}>{a.name}</h3>
-                    {assetMeta(a) && <span className={`font-mono text-[11px] ${muted}`}>{assetMeta(a).replace(/(\d)x(\d)/i, '$1×$2')}</span>}
+                    {assetMeta(a) && <span className={`font-mono text-[11px] ${muted}`}>{assetMeta(a)}</span>}
                   </div>
                   <div className={`grid gap-x-6 gap-y-6 ${cols}`}>
                     {result.options.map((o, oi) => {
