@@ -134,9 +134,21 @@ export default function CopyStudio() {
   };
   const clearMatrix = () => { setMessagingMatrix(''); setMatrixName(''); setMatrixLoading(false); setShowMatrix(false); };
 
+  // ── Usage tracking hints (stored server-side by /api/generate → lib/tracking.js) ─
+  // Anonymous per-browser id (no personal data) + where the messaging matrix came from.
+  const browserId = () => {
+    try {
+      let id = localStorage.getItem('cs_browser_id');
+      if (!id) { id = crypto.randomUUID(); localStorage.setItem('cs_browser_id', id); }
+      return id;
+    } catch { return null; }
+  };
+  const matrixSource = () => (!messagingMatrix.trim() ? null : matrixName ? (matrixName.split('.').pop() || 'file').toLowerCase() : 'pasted');
+
   // ── Generation ─────────────────────────────────────────────────────────────
-  const callGenerate = async (body) => {
-    const res = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const callGenerate = async (body, trigger) => {
+    const tracking = { trigger, sessionId: browserId(), matrixSource: matrixSource() };
+    const res = await fetch('/api/generate', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...body, tracking }) });
     const data = await res.json().catch(() => ({ success: false, error: `Request failed (${res.status})` }));
     if (!data.success) throw new Error(data.error || 'Generation failed');
     return data;
@@ -149,7 +161,7 @@ export default function CopyStudio() {
     const prior = result ? [...result.options, ...priorOptions].slice(0, 6) : [];
     setIsGenerating(true); setError(null);
     try {
-      const data = await callGenerate({ brief, tone, assetIds: orderedSelection, variantCount, provider, messagingMatrix, priorOptions: prior });
+      const data = await callGenerate({ brief, tone, assetIds: orderedSelection, variantCount, provider, messagingMatrix, priorOptions: prior }, result ? 'regenerate_all' : 'generate');
       setResult(data);
       setPriorOptions(prior);
       // Results sit beside the composer on wide screens; on narrow ones, bring them into view.
@@ -166,7 +178,7 @@ export default function CopyStudio() {
     setRegenOption(oi); setError(null);
     const others = result.options.filter((_, i) => i !== oi);
     try {
-      const data = await callGenerate({ brief, tone, assetIds: result.assets.map((a) => a.id), variantCount: 1, provider: result.provider, messagingMatrix, priorOptions: [...others, ...priorOptions].slice(0, 6) });
+      const data = await callGenerate({ brief, tone, assetIds: result.assets.map((a) => a.id), variantCount: 1, provider: result.provider, messagingMatrix, priorOptions: [...others, ...priorOptions].slice(0, 6) }, 'new_option');
       if (data.options?.[0]) setResult((r) => ({ ...r, options: r.options.map((o, i) => (i === oi ? data.options[0] : o)) }));
     } catch (err) { setError(err.message); }
     finally { setRegenOption(null); }

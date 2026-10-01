@@ -2,13 +2,15 @@ import { getAssetTypes } from '@/lib/assetTypes';
 import { readBrandKnowledge } from '@/lib/knowledge';
 import { callLLM, parseJSON, resolveProvider, PROVIDERS } from '@/lib/llm';
 import { buildSystemPrompt, buildGenerateUser, buildRepairUser } from '@/lib/prompts';
+import { logGeneration } from '@/lib/tracking';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300; // multi-asset × up to 3 options, plus optional retry + limit repair
 
 // ─── Generate copy ───────────────────────────────────────────────────────────
 // One brief → 1–3 distinct creative options, each covering every selected asset.
-// Body: { brief, tone, assetIds[], variantCount, provider, messagingMatrix, priorOptions[] }
+// Body: { brief, tone, assetIds[], variantCount, provider, messagingMatrix, priorOptions[], tracking }
+// (tracking = { trigger, sessionId, matrixSource } — usage metrics only, see lib/tracking.js)
 // Returns: { options: [{ angle, assets: { [assetId]: { [fieldKey]: text } } }], assets (specs), provider, model }
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -58,8 +60,10 @@ function findViolations(options, assets) {
 }
 
 export async function POST(request) {
+  const t0 = Date.now();
+  let track = null; // set once the request is valid → every real generation (ok or failed) gets logged
   try {
-    const { brief, tone, assetIds = [], variantCount = 1, provider: requested, messagingMatrix = '', priorOptions = [] } = await request.json();
+    const { brief, tone, assetIds = [], variantCount = 1, provider: requested, messagingMatrix = '', priorOptions = [], tracking = {} } = await request.json();
     if (!brief?.trim()) return Response.json({ success: false, error: 'Paste a brief first.' }, { status: 400 });
 
     const assets = getAssetTypes(Array.isArray(assetIds) ? assetIds : []);
@@ -70,6 +74,7 @@ export async function POST(request) {
 
     const n = Math.max(1, Math.min(3, parseInt(variantCount, 10) || 1));
     const prior = Array.isArray(priorOptions) ? priorOptions.filter(Boolean) : [];
+    track = { tracking, brief, tone, assetIds: assets.map((a) => a.id), n, messagingMatrix, provider, priorCount: prior.length };
     const system = buildSystemPrompt({ brand: readBrandKnowledge(), assets });
     const maxTokens = Math.min(8000, 800 + n * assets.length * 260);
     const varied = n > 1 || prior.length > 0;
@@ -112,9 +117,11 @@ export async function POST(request) {
       } catch (e) { console.error(`[/api/generate] limit repair round ${round + 1} failed:`, e.message); }
     }
 
+    await logGeneration({ ...track, optionsReturned: options.length, success: true, latencyMs: Date.now() - t0 });
     return Response.json({ success: true, options, assets, provider, model: PROVIDERS[provider].model });
   } catch (err) {
     console.error('[/api/generate]', err);
+    if (track) await logGeneration({ ...track, success: false, error: err.message, latencyMs: Date.now() - t0 });
     return Response.json({ success: false, error: err.message }, { status: 500 });
   }
 }

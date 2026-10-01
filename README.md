@@ -12,7 +12,7 @@ side by side; edit inline, redo a single field, replace one option, regenerate a
 
 ## Stack
 Next.js 14 (App Router) · Tailwind · Anthropic Claude (default, `claude-sonnet-5-5`) · OpenAI GPT
-(`gpt-5.4`, toggle) · Vercel. No database in v1 — nothing is stored server-side.
+(`gpt-5.4`, toggle) · Vercel · Supabase (usage metrics only — no briefs or copy are stored).
 
 ## Setup
 1. Import this repo into Vercel (Framework: Next.js, default settings).
@@ -20,6 +20,7 @@ Next.js 14 (App Router) · Tailwind · Anthropic Claude (default, `claude-sonnet
    - `ANTHROPIC_API_KEY` — Claude (default)
    - `OPENAI_API_KEY` — GPT (optional)
    At least one is required. With both, Claude is the default and a Claude/GPT toggle appears.
+   - `SUPABASE_URL`, `SUPABASE_PUBLISHABLE_KEY` — usage tracking (optional; values in `.env.example`)
 3. Deploy. Local dev: `npm install && npm run dev` with a `.env.local` (see `.env.example`).
 
 ## Where the knowledge lives (edit without code)
@@ -49,3 +50,16 @@ on the next deploy with its limits enforced. The format is documented at the top
 | `POST /api/generate` | `{ brief, tone, assetIds[], variantCount, provider, messagingMatrix, priorOptions[] }` |
 | `POST /api/regenerate-field` | `{ brief, tone, assetId, fieldKey, current, provider, messagingMatrix }` |
 | `POST /api/extract-pdf` | `{ base64 }` → messaging-matrix text |
+
+## Usage tracking
+Every generation (Generate, Regenerate all, New option — success or failure) logs one anonymous row to
+the shared **axe-platform** Supabase project → `copy_studio.generation_events`: copy types, tone,
+options requested/returned, brief length (chars/words), messaging matrix attached + source
+(pdf/txt/csv/pasted), model, latency, outcome, and an anonymous per-browser id. The brief text and
+generated copy are **not** stored. Logging happens server-side in `/api/generate` via `lib/tracking.js`,
+waits at most 2s, never breaks generation, and is skipped if the env vars aren't set.
+
+- Write path: `public.copy_studio_log_generation(p jsonb)` RPC (write-only — the key can't read data).
+- Reports (Supabase SQL editor): `copy_studio.v_daily_usage`, `v_tone_usage`, `v_copy_type_usage`
+  (production deploys only; local/preview runs are tagged and excluded).
+- New metric? Send it in `extra` first; promote to a real column in `db/axe_platform_setup.sql` once it sticks.
