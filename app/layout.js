@@ -7,7 +7,7 @@ const sans = Schibsted_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600
 const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' });
 
 export const metadata = {
-  title: 'AXE Copy Studio',
+  title: 'HSAD Copy Studio',
   description: 'AX Enablement — on-brand LG copy for promotional and retail assets',
 };
 

@@ -232,9 +232,9 @@ export default function CopyStudio() {
         <div className="max-w-[1440px] mx-auto px-5 sm:px-8 py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-8 h-8 rounded-[9px] bg-accent text-white flex items-center justify-center flex-shrink-0">{Icon.pen}</div>
-            <div className="flex items-baseline gap-2 min-w-0">
-              <span className="text-base font-extrabold tracking-[-0.01em] whitespace-nowrap truncate">AXE Copy Studio</span>
-              <span className={`text-xs ${muted} hidden sm:inline`}>AX Enablement</span>
+            <div className="flex flex-col min-w-0 leading-tight">
+              <span className="text-base font-extrabold tracking-[-0.01em] whitespace-nowrap truncate">HSAD Copy Studio</span>
+              <span className={`text-xs ${muted} whitespace-nowrap truncate hidden sm:block`}>Developed with AI by AXE Team</span>
             </div>
             <span className="hidden sm:inline-block flex-shrink-0 text-[11px] font-bold text-accent dark:text-accent-light bg-accent-tint dark:bg-accent-tint-dark rounded-full px-2.5 py-[3px]">Prototype</span>
           </div>
