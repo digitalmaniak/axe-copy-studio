@@ -238,12 +238,12 @@ export default function CopyStudio() {
                 <span className="tag-mono hidden sm:inline">Model</span>
                 <div className="seg" role="group" aria-label="Model">
                   {providers.map((p) => (
-                    <button key={p.id} type="button" onClick={() => setProvider(p.id)} title={p.model} aria-pressed={provider === p.id}>{p.label}</button>
+                    <button key={p.id} type="button" onClick={() => setProvider(p.id)} title={p.displayModel || p.model} aria-pressed={provider === p.id}>{p.label}</button>
                   ))}
                 </div>
               </>
             ) : providers[0] ? (
-              <span className="spec" title={providers[0].model}>{providers[0].label}</span>
+              <span className="spec" title={providers[0].displayModel || providers[0].model}>{providers[0].label}</span>
             ) : null}
             <button type="button" onClick={toggleTheme} aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'} className="btn btn-secondary btn-icon">
               {theme === 'light' ? Icon.moon : Icon.sun}
