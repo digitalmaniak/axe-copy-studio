@@ -228,7 +228,7 @@ export default function CopyStudio() {
             <div className="logo">{Icon.pen}</div>
             <div className="flex flex-col min-w-0 leading-tight">
               <span className="text-[17px] font-extrabold tracking-[-0.02em] whitespace-nowrap truncate">HSAD Copy Studio</span>
-              <span className="text-xs text-ink-3 whitespace-nowrap truncate">Developed by AXE Team</span>
+              <span className="text-xs text-ink-3 whitespace-nowrap truncate">Developed by <b className="font-bold">AX<span className="text-accent-text">E</span></b> Team</span>
             </div>
             <span className="badge b-accent hidden sm:inline-flex ml-1.5">Prototype</span>
           </div>
