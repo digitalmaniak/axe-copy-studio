@@ -1,20 +1,24 @@
-import { Schibsted_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { GeistSans } from 'geist/font/sans';
+import { GeistMono } from 'geist/font/mono';
 import './globals.css';
 import ThemeProvider from '@/components/ThemeProvider';
 import Footer from '@/components/Footer';
-
-const sans = Schibsted_Grotesk({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'], variable: '--font-sans' });
-const mono = JetBrains_Mono({ subsets: ['latin'], weight: ['400', '500'], variable: '--font-mono' });
 
 export const metadata = {
   title: 'HSAD Copy Studio',
   description: 'AX Enablement — on-brand LG copy for promotional and retail assets',
 };
 
+// Set the saved theme before first paint so dark mode doesn't flash light.
+const themeScript = `try{if(localStorage.getItem('ax-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}`;
+
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${sans.variable} ${mono.variable} font-sans antialiased bg-paper dark:bg-night text-ink dark:text-night-ink transition-colors duration-200`}>
+    <html lang="en" data-theme="light" suppressHydrationWarning className={`${GeistSans.variable} ${GeistMono.variable}`}>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="font-sans antialiased min-h-screen flex flex-col">
         <ThemeProvider>
           {children}
           <Footer />

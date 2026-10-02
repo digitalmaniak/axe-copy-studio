@@ -4,20 +4,24 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const ThemeContext = createContext({ theme: 'light', toggle: () => {} });
 export const useTheme = () => useContext(ThemeContext);
 
+// AXE themes: light is the default; dark is [data-theme="dark"] on <html>.
+const apply = (t) => { document.documentElement.dataset.theme = t; };
+
 export default function ThemeProvider({ children }) {
   const [theme, setTheme] = useState('light');
 
   useEffect(() => {
-    const saved = localStorage.getItem('ax-theme') || 'light';
+    let saved = 'light';
+    try { saved = localStorage.getItem('ax-theme') === 'dark' ? 'dark' : 'light'; } catch {}
     setTheme(saved);
-    document.documentElement.classList.toggle('dark', saved === 'dark');
+    apply(saved);
   }, []);
 
   const toggle = () => {
     const next = theme === 'light' ? 'dark' : 'light';
     setTheme(next);
-    localStorage.setItem('ax-theme', next);
-    document.documentElement.classList.toggle('dark', next === 'dark');
+    try { localStorage.setItem('ax-theme', next); } catch {}
+    apply(next);
   };
 
   return (

@@ -4,43 +4,25 @@ import { useState, useEffect, useRef } from 'react';
 import { TONE_NAMES } from '@/lib/prompts';
 import { useTheme } from '@/components/ThemeProvider';
 
-// ─── Icons ───────────────────────────────────────────────────────────────────
-const svg = (d, size = 'w-4 h-4', sw = 1.6) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} className={size} aria-hidden="true">
-    <path strokeLinecap="round" strokeLinejoin="round" d={d} />
-  </svg>
-);
+// ─── Icons (Lucide · 24px grid · 1.75 stroke — see AXE Style Guide §05) ─────────
+const ic = (children, size = '') => <svg viewBox="0 0 24 24" className={`i ${size}`} aria-hidden="true">{children}</svg>;
 const Icon = {
-  pen: svg('M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13L2.25 21.75l.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487z', 'w-[18px] h-[18px]', 1.8),
-  refresh: svg('M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99', 'w-[18px] h-[18px]', 1.8),
-  wand: svg('M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z', 'w-[18px] h-[18px]', 1.8),
-  copy: svg('M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184', 'w-[15px] h-[15px]'),
-  download: svg('M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3', 'w-[15px] h-[15px]'),
-  upload: svg('M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5', 'w-[15px] h-[15px]'),
-  doc: svg('M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z', 'w-[18px] h-[18px]'),
-  x: svg('M6 18L18 6M6 6l12 12', 'w-4 h-4', 1.8),
-  check: svg('M4.5 12.75l6 6 9-13.5', 'w-3 h-3', 3),
-  moon: svg('M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z'),
-  sun: svg('M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z'),
-  spinner: (
-    <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-    </svg>
-  ),
+  pen: ic(<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />),
+  sparkles: ic(<><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></>),
+  sparklesLg: ic(<><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z" /><path d="M20 3v4" /><path d="M22 5h-4" /><path d="M4 17v2" /><path d="M5 18H3" /></>, 'lg'),
+  refresh: ic(<><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" /><path d="M8 16H3v5" /></>),
+  copy: ic(<><rect width="14" height="14" x="8" y="8" rx="2" ry="2" /><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" /></>, 'sm'),
+  download: ic(<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /></>, 'sm'),
+  upload: ic(<><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m17 8-5-5-5 5" /><path d="M12 3v12" /></>, 'sm'),
+  doc: ic(<><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></>),
+  x: ic(<><path d="M18 6 6 18" /><path d="m6 6 12 12" /></>, 'sm'),
+  moon: ic(<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />, 'sm'),
+  sun: ic(<><circle cx="12" cy="12" r="4" /><path d="M12 2v2" /><path d="M12 20v2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="M2 12h2" /><path d="M20 12h2" /><path d="m6.34 17.66-1.41 1.41" /><path d="m19.07 4.93-1.41 1.41" /></>, 'sm'),
+  alert: ic(<><circle cx="12" cy="12" r="10" /><path d="M12 8v4" /><path d="M12 16h.01" /></>),
+  warn: ic(<><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></>),
+  check: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  spinner: <span className="spin" aria-hidden="true" />,
 };
-
-// ─── Style tokens ────────────────────────────────────────────────────────────
-const card = 'bg-white dark:bg-night-surface border border-line dark:border-night-line rounded-2xl';
-const label = 'text-xs font-bold text-ink dark:text-night-ink';
-const eyebrow = 'text-[11px] font-bold uppercase tracking-[0.1em] text-faint dark:text-night-faint';
-const muted = 'text-muted dark:text-night-muted';
-const outlineBtn = 'flex items-center gap-2 px-3.5 py-2 rounded-[10px] border border-line-strong dark:border-night-line-strong bg-white dark:bg-night-surface text-[13px] font-semibold text-ink dark:text-night-ink hover:border-ink/40 dark:hover:border-night-muted transition-colors disabled:opacity-40';
-const segWrap = 'flex p-[3px] gap-0.5 rounded-[10px] bg-seg dark:bg-night-seg';
-const segBtn = (on) => `rounded-lg text-[13px] transition-all disabled:opacity-40 ${on
-  ? 'bg-white dark:bg-night-line-strong text-ink dark:text-night-ink font-bold shadow-[0_1px_2px_rgba(22,22,26,0.12)]'
-  : 'text-muted dark:text-night-muted font-semibold hover:text-ink dark:hover:text-night-ink'}`;
-const fieldBox = 'w-full rounded-[10px] border px-3 py-2.5 leading-[1.45] bg-subtle dark:bg-night-subtle text-ink dark:text-night-ink placeholder-faint focus:outline-none transition-colors';
 
 function limitsSummary(a) {
   return a.fields.map((f) => `${f.label} ${f.max ?? '—'}`).join(' · ');
@@ -208,7 +190,7 @@ export default function CopyStudio() {
   const assetText = (a, fields = {}) => [a.name, ...a.fields.filter((f) => fields[f.key]).map((f) => `${f.label}: ${fields[f.key]}`)].join('\n');
   const optionText = (o, i) => [`OPTION ${i + 1}${o.angle ? ` — ${o.angle}` : ''}`, '', ...result.assets.map((a) => assetText(a, o.assets[a.id]))].join('\n\n');
   const allText = () => [
-    'AXE COPY STUDIO — AX ENABLEMENT',
+    'HSAD COPY STUDIO — AX ENABLEMENT',
     `Tone: ${tone} · ${result.options.length} option(s) · ${result.assets.length} asset(s)`,
     '',
     'BRIEF',
@@ -240,136 +222,129 @@ export default function CopyStudio() {
   return (
     <>
       {/* ── Top bar ─────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-white dark:bg-night-surface border-b border-line dark:border-night-line">
-        <div className="max-w-[1440px] mx-auto px-5 sm:px-8 py-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-8 h-8 rounded-[9px] bg-accent text-white flex items-center justify-center flex-shrink-0">{Icon.pen}</div>
+      <header className="topbar">
+        <div className="max-w-[1280px] h-full mx-auto px-4 sm:px-6 flex items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="logo">{Icon.pen}</div>
             <div className="flex flex-col min-w-0 leading-tight">
-              <span className="text-base font-extrabold tracking-[-0.01em] whitespace-nowrap truncate">HSAD Copy Studio</span>
-              <span className={`text-xs ${muted} whitespace-nowrap truncate`}>Developed by AXE Team</span>
+              <span className="text-[17px] font-extrabold tracking-[-0.02em] whitespace-nowrap truncate">HSAD Copy Studio</span>
+              <span className="text-xs text-ink-3 whitespace-nowrap truncate">Developed by AXE Team</span>
             </div>
-            <span className="hidden sm:inline-block flex-shrink-0 text-[11px] font-bold text-accent dark:text-accent-light bg-accent-tint dark:bg-accent-tint-dark rounded-full px-2.5 py-[3px]">Prototype</span>
+            <span className="badge b-accent hidden sm:inline-flex ml-1.5">Prototype</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             {providers.length > 1 ? (
               <>
-                <span className={`text-xs ${muted} hidden sm:inline`}>Model</span>
-                <div className={segWrap} role="group" aria-label="Model">
+                <span className="tag-mono hidden sm:inline">Model</span>
+                <div className="seg" role="group" aria-label="Model">
                   {providers.map((p) => (
-                    <button key={p.id} type="button" onClick={() => setProvider(p.id)} title={p.model} aria-pressed={provider === p.id}
-                      className={`${segBtn(provider === p.id)} px-3.5 py-1.5`}>{p.label}</button>
+                    <button key={p.id} type="button" onClick={() => setProvider(p.id)} title={p.model} aria-pressed={provider === p.id}>{p.label}</button>
                   ))}
                 </div>
               </>
             ) : providers[0] ? (
-              <span className={`text-xs ${muted}`} title={providers[0].model}>{providers[0].label}</span>
+              <span className="spec" title={providers[0].model}>{providers[0].label}</span>
             ) : null}
-            <button type="button" onClick={toggleTheme} aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'}
-              className="w-9 h-9 rounded-[10px] border border-line dark:border-night-line-strong bg-white dark:bg-night-surface text-muted dark:text-night-muted hover:text-ink dark:hover:text-night-ink flex items-center justify-center">
+            <button type="button" onClick={toggleTheme} aria-label={theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode'} className="btn btn-secondary btn-icon">
               {theme === 'light' ? Icon.moon : Icon.sun}
             </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-[1440px] mx-auto px-5 sm:px-8 pt-7 pb-12 flex flex-col lg:flex-row gap-7 items-start">
+      <div className="w-full max-w-[1280px] mx-auto px-4 sm:px-6 pt-6 pb-12 flex flex-col lg:flex-row gap-4 items-start">
 
         {/* ── Composer ──────────────────────────────────────────────────────── */}
-        <aside className={`${card} w-full lg:w-[420px] lg:flex-shrink-0 lg:sticky lg:top-[84px] lg:max-h-[calc(100vh-100px)] lg:overflow-y-auto p-6 flex flex-col gap-6`}>
-          <div className="flex flex-col gap-1">
-            <h1 className="text-2xl font-extrabold tracking-[-0.02em] leading-tight">What are we writing?</h1>
-            <p className={`text-[13px] ${muted}`}>Brief in, on-brand LG copy out — sized to every placement.</p>
+        <aside className="card w-full lg:w-[420px] lg:flex-shrink-0 lg:sticky lg:top-[80px] lg:max-h-[calc(100vh-96px)] lg:overflow-y-auto p-6 flex flex-col gap-6">
+          <div className="flex flex-col gap-1.5">
+            <h1 className="h2">What are we writing?</h1>
+            <p className="text-[13px] text-ink-2">Brief in, on-brand LG copy out — sized to every placement.</p>
           </div>
 
-          {setupError && <div className="p-3 rounded-xl border border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950/40 text-xs font-semibold text-red-700 dark:text-red-400">{setupError}</div>}
+          {setupError && (
+            <div className="alert danger">{Icon.alert}<div><b>Couldn&apos;t load copy types</b><p>{setupError}</p></div></div>
+          )}
           {!setupError && providers.length === 0 && assetTypes.length > 0 && (
-            <div className="p-3 rounded-xl border border-amber-300 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/40 text-xs font-semibold text-amber-800 dark:text-amber-400">No AI provider configured — add ANTHROPIC_API_KEY and/or OPENAI_API_KEY in the environment.</div>
+            <div className="alert warning">{Icon.warn}<div><b>No AI provider configured</b><p>Add ANTHROPIC_API_KEY and/or OPENAI_API_KEY in the environment.</p></div></div>
           )}
 
           {/* Brief + matrix */}
           <div className="flex flex-col gap-2">
-            <label htmlFor="brief" className={label}>Creative brief</label>
+            <label htmlFor="brief" className="field-label">Creative brief</label>
             <textarea id="brief" ref={briefRef} value={brief} onChange={(e) => setBrief(e.target.value)} spellCheck
               placeholder="Paste the creative brief — BU, category, products/models, promotion details and dates, audience, priority message, copy direction, legal notes…"
-              className={`${fieldBox} min-h-[150px] overflow-hidden resize-none text-[13px] leading-[1.55] border-line-strong dark:border-night-line-strong focus:border-accent/60 dark:focus:border-accent-light/60`} />
+              className="textarea min-h-[150px] overflow-hidden resize-none leading-[1.55]" />
 
             {!showMatrix && !hasMatrix && (
-              <button type="button" onClick={() => setShowMatrix(true)}
-                className="flex items-center gap-3 rounded-[10px] border border-line dark:border-night-line px-3 py-2.5 text-left hover:border-line-strong dark:hover:border-night-line-strong">
-                <span className={muted}>{Icon.doc}</span>
+              <button type="button" onClick={() => setShowMatrix(true)} className="drop w-full flex items-center gap-3 px-3.5 py-3 text-left">
+                <span className="text-ink-3">{Icon.doc}</span>
                 <span className="flex flex-col">
                   <span className="text-[13px] font-semibold">Attach messaging matrix</span>
-                  <span className={`text-xs ${muted}`}>Optional · pillars, proof points, approved language</span>
+                  <span className="text-xs text-ink-3">Optional · pillars, proof points, approved language</span>
                 </span>
               </button>
             )}
 
             {!showMatrix && hasMatrix && (
-              <div className="flex items-center justify-between gap-2.5 rounded-[10px] border border-line dark:border-night-line px-3 py-2.5">
+              <div className="flex items-center justify-between gap-2.5 rounded-md border border-line bg-surface px-3.5 py-2.5">
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <span className={muted}>{matrixLoading ? Icon.spinner : Icon.doc}</span>
+                  <span className={matrixLoading ? 'text-accent-text' : 'text-ink-3'}>{matrixLoading ? Icon.spinner : Icon.doc}</span>
                   <div className="flex flex-col min-w-0">
                     <span className="text-[13px] font-semibold truncate">{matrixName || 'Pasted messaging matrix'}</span>
-                    <span className={`text-xs ${matrixLoading ? 'text-accent dark:text-accent-light font-semibold' : muted}`}>
-                      {matrixLoading ? 'Extracting PDF…' : `Messaging matrix · ${messagingMatrix.length.toLocaleString()} chars`}
+                    <span className={matrixLoading ? 'text-xs font-medium text-accent-text' : 'text-xs text-ink-3'}>
+                      {matrixLoading ? 'Reading the PDF…' : <>Messaging matrix · <span className="mono">{messagingMatrix.length.toLocaleString()}</span> chars</>}
                     </span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
-                  {!matrixLoading && <button type="button" onClick={() => setShowMatrix(true)} className={`text-xs font-semibold ${muted} hover:text-ink dark:hover:text-night-ink px-2 py-1.5`}>Edit</button>}
-                  <button type="button" onClick={clearMatrix} aria-label="Remove messaging matrix"
-                    className={`w-8 h-8 rounded-lg flex items-center justify-center ${muted} hover:text-accent dark:hover:text-accent-light`}>{Icon.x}</button>
+                  {!matrixLoading && <button type="button" onClick={() => setShowMatrix(true)} className="btn btn-ghost btn-sm">Edit</button>}
+                  <button type="button" onClick={clearMatrix} aria-label="Remove messaging matrix" className="btn btn-ghost btn-sm btn-icon">{Icon.x}</button>
                 </div>
               </div>
             )}
 
             {showMatrix && (
-              <div className="rounded-[10px] border border-line dark:border-night-line p-3 flex flex-col gap-2.5">
+              <div className="rounded-md border border-line bg-surface-2 p-3 flex flex-col gap-2.5">
                 <div className="flex items-center justify-between gap-2">
-                  <label htmlFor="matrix" className={label}>Messaging matrix</label>
-                  <div className="flex items-center gap-1">
-                    <label className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border border-line dark:border-night-line-strong ${muted} hover:text-ink dark:hover:text-night-ink cursor-pointer`}>
+                  <label htmlFor="matrix" className="field-label">Messaging matrix</label>
+                  <div className="flex items-center gap-1.5">
+                    <label className="btn btn-secondary btn-sm">
                       <input type="file" accept=".pdf,.txt,.csv,.tsv,.md,application/pdf,text/plain,text/csv" className="sr-only" onChange={handleMatrixFile} />
                       {Icon.upload} Upload file
                     </label>
-                    <button type="button" onClick={() => setShowMatrix(false)} className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-accent dark:text-accent-light hover:bg-accent-tint dark:hover:bg-accent-tint-dark">Done</button>
+                    <button type="button" onClick={() => setShowMatrix(false)} className="btn btn-soft btn-sm">Done</button>
                   </div>
                 </div>
                 <textarea id="matrix" value={messagingMatrix} onChange={(e) => { setMessagingMatrix(e.target.value); if (matrixName) setMatrixName(''); }} rows={5}
                   placeholder="…or paste your messaging matrix here. Pasting straight from Excel works."
-                  className={`${fieldBox} text-xs border-line dark:border-night-line focus:border-accent/60 dark:focus:border-accent-light/60`} />
-                <span className={`text-[11px] ${muted}`}>PDF, TXT, MD, CSV/TSV. PDFs are read automatically; from Excel, export CSV or paste.</span>
+                  className="textarea text-[12.5px]" />
+                <span className="hint">PDF, TXT, MD, CSV/TSV. PDFs are read automatically; from Excel, export CSV or paste.</span>
               </div>
             )}
           </div>
 
           {/* Copy types */}
           <div className="flex flex-col gap-2.5">
-            <div className="flex items-baseline justify-between gap-2">
-              <span className={label}>Copy types</span>
-              <div className="flex items-center gap-3 text-xs">
-                <span className={muted}>{assetCount} of {assetTypes.length}</span>
-                <button type="button" onClick={() => setSelected(assetTypes.map((a) => a.id))} className="font-semibold text-accent dark:text-accent-light hover:underline">Select all</button>
-                {assetCount > 0 && <button type="button" onClick={() => setSelected([])} className={`font-semibold ${muted} hover:text-ink dark:hover:text-night-ink`}>Clear</button>}
+            <div className="flex items-center justify-between gap-2">
+              <span className="field-label">Copy types</span>
+              <div className="flex items-center gap-3">
+                <span className="spec">{assetCount} / {assetTypes.length}</span>
+                <button type="button" onClick={() => setSelected(assetTypes.map((a) => a.id))} className="btn-link">Select all</button>
+                {assetCount > 0 && <button type="button" onClick={() => setSelected([])} className="btn-link">Clear</button>}
               </div>
             </div>
-            {assetTypes.length === 0 && !setupError && <p className={`text-xs ${muted}`}>Loading copy types…</p>}
+            {assetTypes.length === 0 && !setupError && <p className="hint">Loading copy types…</p>}
             {Object.entries(groups).map(([group, list]) => (
-              <div key={group} className="flex flex-col gap-1.5">
-                <span className={`${eyebrow} mb-0.5`}>{group}</span>
+              <div key={group} className="flex flex-col gap-2">
+                <span className="eyebrow mt-1">{group}</span>
                 {list.map((a) => {
                   const on = selected.includes(a.id);
                   return (
-                    <button key={a.id} type="button" onClick={() => toggleAsset(a.id)} aria-pressed={on} title={a.placement || undefined}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-[10px] border text-left transition-colors ${on
-                        ? 'border-accent dark:border-accent-light/70 bg-accent-tint dark:bg-accent-tint-dark'
-                        : 'border-line dark:border-night-line bg-white dark:bg-night-surface hover:border-line-strong dark:hover:border-night-line-strong'}`}>
-                      <span className={`w-[18px] h-[18px] flex-shrink-0 rounded-[5px] flex items-center justify-center text-white ${on ? 'bg-accent border border-accent' : 'border-[1.5px] border-[#BDBCB6] dark:border-night-line-strong'}`}>
-                        {on && Icon.check}
-                      </span>
+                    <button key={a.id} type="button" onClick={() => toggleAsset(a.id)} aria-pressed={on} title={a.placement || undefined} className="choice">
+                      <span className={`box ${on ? 'on' : ''}`}>{Icon.check}</span>
                       <span className="flex flex-col gap-0.5 min-w-0">
-                        <span className="text-[13px] font-bold leading-snug">{a.name}</span>
-                        <span className={`font-mono text-[11px] ${muted}`}>{limitsSummary(a)}</span>
+                        <span className="t">{a.name}</span>
+                        <span className="spec">{limitsSummary(a)}</span>
                       </span>
                     </button>
                   );
@@ -380,44 +355,37 @@ export default function CopyStudio() {
 
           {/* Tone */}
           <div className="flex flex-col gap-2.5">
-            <span className={label}>Tone</span>
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Tone">
+            <span className="field-label">Tone</span>
+            <div className="flex flex-wrap gap-2" role="group" aria-label="Tone">
               {TONE_NAMES.map((t) => (
-                <button key={t} type="button" onClick={() => setTone(t)} aria-pressed={tone === t}
-                  className={`rounded-full px-3.5 py-2 text-[13px] font-semibold border transition-colors ${tone === t
-                    ? 'border-ink bg-ink text-white dark:border-night-ink dark:bg-night-ink dark:text-night'
-                    : 'border-line-strong dark:border-night-line-strong bg-white dark:bg-night-surface text-[#3A3A42] dark:text-night-muted hover:border-ink/40 dark:hover:border-night-muted'}`}>{t}</button>
+                <button key={t} type="button" onClick={() => setTone(t)} aria-pressed={tone === t} className="chip">{t}</button>
               ))}
             </div>
           </div>
 
           {/* Options */}
           <div className="flex items-center justify-between gap-3">
-            <div className="flex flex-col">
-              <span className={label}>Options</span>
-              <span className={`text-xs ${muted}`}>Each a different creative route</span>
+            <div className="flex flex-col gap-0.5">
+              <span className="field-label">Options</span>
+              <span className="hint">Each a different creative route</span>
             </div>
-            <div className={segWrap} role="group" aria-label="Number of options">
+            <div className="seg" role="group" aria-label="Number of options">
               {[1, 2, 3].map((k) => (
-                <button key={k} type="button" onClick={() => setVariantCount(k)} disabled={isGenerating} aria-pressed={variantCount === k}
-                  className={`${segBtn(variantCount === k)} w-10 h-[34px]`}>{k}</button>
+                <button key={k} type="button" onClick={() => setVariantCount(k)} disabled={isGenerating} aria-pressed={variantCount === k} className="w-10">{k}</button>
               ))}
             </div>
           </div>
 
           {/* Generate / Regenerate all */}
           <div className="flex flex-col gap-2">
-            <button type="button" onClick={handleGenerate} disabled={!canGenerate}
-              className={`w-full rounded-xl py-[15px] px-4 text-[15px] font-bold flex items-center justify-center gap-2.5 transition-colors ${canGenerate
-                ? 'bg-accent hover:bg-accent-hover text-white shadow-[0_8px_20px_-8px_rgba(165,0,52,0.55)]'
-                : 'bg-seg dark:bg-night-seg text-faint dark:text-night-faint cursor-not-allowed'}`}>
+            <button type="button" onClick={handleGenerate} disabled={!canGenerate} className="btn btn-primary btn-lg w-full">
               {isGenerating
                 ? <>{Icon.spinner} Writing {variantCount > 1 ? plural(variantCount, 'option') : 'copy'}…</>
                 : result
                   ? <>{Icon.refresh} Regenerate all</>
-                  : <>{Icon.wand} Generate {variantCount > 1 ? plural(variantCount, 'option') : 'copy'}{assetCount ? ` · ${plural(assetCount, 'asset')}` : ''}</>}
+                  : <>{Icon.sparkles} Generate {variantCount > 1 ? plural(variantCount, 'option') : 'copy'}{assetCount ? ` · ${plural(assetCount, 'asset')}` : ''}</>}
             </button>
-            <span className={`text-xs ${muted} text-center`}>
+            <span className="hint text-center">
               {!brief.trim() || assetCount === 0
                 ? `${!brief.trim() ? 'Paste a brief' : ''}${!brief.trim() && assetCount === 0 ? ' and ' : ''}${assetCount === 0 ? 'select at least one copy type' : ''} to generate.`
                 : isGenerating
@@ -430,32 +398,33 @@ export default function CopyStudio() {
         </aside>
 
         {/* ── Results ───────────────────────────────────────────────────────── */}
-        <main ref={resultsRef} className="flex-1 min-w-0 w-full flex flex-col gap-[18px] scroll-mt-24">
+        <main ref={resultsRef} className="flex-1 min-w-0 w-full flex flex-col gap-4 scroll-mt-20">
           {error && (
-            <div className="flex items-start justify-between gap-3 p-4 rounded-xl border border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950/40 text-[13px] font-semibold text-red-700 dark:text-red-400">
-              <span>Something went wrong: {error}</span>
-              <button type="button" onClick={() => setError(null)} aria-label="Dismiss error" className="flex-shrink-0">{Icon.x}</button>
+            <div className="alert danger" role="alert">
+              {Icon.alert}
+              <div className="flex-1 min-w-0"><b>Something went wrong</b><p>{error}</p></div>
+              <button type="button" onClick={() => setError(null)} aria-label="Dismiss error" className="btn btn-ghost btn-sm btn-icon -my-1 -mr-1">{Icon.x}</button>
             </div>
           )}
 
           {!result && !isGenerating && (
-            <div className={`${card} min-h-[420px] flex flex-col items-center justify-center text-center gap-3 px-8 py-16`}>
-              <div className="w-12 h-12 rounded-2xl bg-accent-tint dark:bg-accent-tint-dark text-accent dark:text-accent-light flex items-center justify-center">{Icon.wand}</div>
-              <h2 className="text-xl font-extrabold tracking-[-0.02em]">Your copy lands here</h2>
-              <p className={`text-sm ${muted} max-w-[420px]`}>Paste a brief, pick the copy types, and generate. Each option is a different creative route, shown side by side for every asset.</p>
+            <div className="empty bg-surface min-h-[420px] px-8">
+              <div className="ic">{Icon.sparklesLg}</div>
+              <h2 className="card-t">Your copy lands here</h2>
+              <p className="text-[13px] text-ink-3 max-w-[420px]">Paste a brief, pick the copy types, and generate. Each option is a different creative route, shown side by side for every asset.</p>
             </div>
           )}
 
           {!result && isGenerating && (
-            <div className={`${card} min-h-[420px] p-6 flex flex-col gap-5`} aria-live="polite">
-              <div className="flex items-center gap-2.5 text-sm font-semibold text-accent dark:text-accent-light">{Icon.spinner} Writing {variantCount > 1 ? plural(variantCount, 'option') : 'copy'} for {plural(assetCount, 'asset')}…</div>
+            <div className="card min-h-[420px] p-6 flex flex-col gap-5" aria-live="polite">
+              <div className="flex items-center gap-2.5 text-[13px] font-semibold text-accent-text">{Icon.spinner} Writing {variantCount > 1 ? plural(variantCount, 'option') : 'copy'} for {plural(assetCount, 'asset')}…</div>
               <div className={`grid gap-4 ${variantCount >= 3 ? 'md:grid-cols-2 xl:grid-cols-3' : variantCount === 2 ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
                 {Array.from({ length: variantCount }).map((_, i) => (
-                  <div key={i} className="flex flex-col gap-3 animate-pulse">
-                    <div className="h-24 rounded-xl bg-seg dark:bg-night-seg" />
-                    <div className="h-10 rounded-[10px] bg-seg dark:bg-night-seg" />
-                    <div className="h-20 rounded-[10px] bg-seg dark:bg-night-seg" />
-                    <div className="h-10 rounded-[10px] bg-seg dark:bg-night-seg" />
+                  <div key={i} className="flex flex-col gap-3">
+                    <div className="skel h-24 rounded-lg" />
+                    <div className="skel h-10 rounded-md" />
+                    <div className="skel h-20 rounded-md" />
+                    <div className="skel h-10 rounded-md" />
                   </div>
                 ))}
               </div>
@@ -463,55 +432,54 @@ export default function CopyStudio() {
           )}
 
           {result && (
-            <div className={`flex flex-col gap-[18px] transition-opacity ${isGenerating ? 'opacity-50 pointer-events-none' : ''}`}>
+            <div className={`flex flex-col gap-4 transition-opacity ${isGenerating ? 'opacity-50 pointer-events-none' : ''}`}>
               <div className="flex items-end justify-between gap-4 flex-wrap">
-                <div className="flex flex-col gap-0.5">
-                  <h2 className="text-[22px] font-extrabold tracking-[-0.02em]">{plural(n, 'option')} · {plural(result.assets.length, 'asset')}</h2>
-                  <span className={`text-[13px] ${muted}`}>{tone} tone · written by {providerLabel(result.provider)} · click any field to edit</span>
+                <div className="flex flex-col gap-1">
+                  <h2 className="h2">{plural(n, 'option')} · {plural(result.assets.length, 'asset')}</h2>
+                  <span className="text-[12.5px] text-ink-3">{tone} tone · written by {providerLabel(result.provider)} · click any field to edit</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <button type="button" onClick={() => copy(allText(), 'all')} className={outlineBtn}>{Icon.copy} {copied === 'all' ? 'Copied!' : 'Copy all'}</button>
-                  <button type="button" onClick={exportTxt} className={outlineBtn}>{Icon.download} Export .txt</button>
-                  <button type="button" onClick={() => { setResult(null); setPriorOptions([]); }} className={`px-3 py-2 text-[13px] font-semibold ${muted} hover:text-ink dark:hover:text-night-ink`}>Clear</button>
+                  <button type="button" onClick={() => copy(allText(), 'all')} className="btn btn-secondary">{Icon.copy} {copied === 'all' ? 'Copied' : 'Copy all'}</button>
+                  <button type="button" onClick={exportTxt} className="btn btn-secondary">{Icon.download} Export .txt</button>
+                  <button type="button" onClick={() => { setResult(null); setPriorOptions([]); }} className="btn btn-ghost">Clear</button>
                 </div>
               </div>
 
               {/* Option routes */}
               <div className={`grid gap-4 ${cols}`}>
                 {result.options.map((o, oi) => (
-                  <div key={oi} className={`rounded-2xl p-5 flex flex-col gap-2 bg-ink text-white dark:bg-night-subtle dark:border dark:border-night-line-strong transition-opacity ${regenOption === oi ? 'opacity-50' : ''}`}>
+                  <div key={oi} className={`card p-5 flex flex-col gap-3 transition-opacity ${regenOption === oi ? 'opacity-50' : ''}`}>
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-[#BDBDC4]">Option {oi + 1}</span>
-                      <div className="flex items-center gap-1">
-                        <button type="button" onClick={() => copy(optionText(o, oi), `opt-${oi}`)} className="rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20">{copied === `opt-${oi}` ? 'Copied' : 'Copy'}</button>
+                      <span className="tag-mono text-accent-text">Option {String(oi + 1).padStart(2, '0')}</span>
+                      <div className="flex items-center gap-1.5">
+                        <button type="button" onClick={() => copy(optionText(o, oi), `opt-${oi}`)} className="btn btn-secondary btn-sm">{Icon.copy}{copied === `opt-${oi}` ? 'Copied' : 'Copy'}</button>
                         {n > 1 && (
-                          <button type="button" onClick={() => handleNewOption(oi)} disabled={regenOption !== null || isGenerating}
-                            className="rounded-lg px-2.5 py-1.5 text-xs font-semibold bg-white/10 hover:bg-white/20 disabled:opacity-40 flex items-center gap-1.5">
-                            {regenOption === oi && Icon.spinner}{regenOption === oi ? 'Writing…' : 'New option'}
+                          <button type="button" onClick={() => handleNewOption(oi)} disabled={regenOption !== null || isGenerating} className="btn btn-ghost btn-sm">
+                            {regenOption === oi ? Icon.spinner : Icon.refresh}{regenOption === oi ? 'Writing…' : 'New option'}
                           </button>
                         )}
                       </div>
                     </div>
-                    <p className="text-[15px] leading-snug text-[#E4E4E8]">{o.angle || '—'}</p>
+                    <p className="text-[15px] font-medium leading-snug tracking-[-0.01em]">{o.angle || '—'}</p>
                   </div>
                 ))}
               </div>
 
               {/* One section per asset; options side by side */}
               {result.assets.map((a) => (
-                <section key={a.id} className={`${card} px-[22px] py-5 flex flex-col gap-4`}>
+                <section key={a.id} className="card p-5 flex flex-col gap-4">
                   <div className="flex items-baseline justify-between gap-3 flex-wrap">
-                    <h3 className="text-base font-extrabold tracking-[-0.01em]" title={a.placement || undefined}>{a.name}</h3>
-                    {assetMeta(a) && <span className={`font-mono text-[11px] ${muted}`}>{assetMeta(a)}</span>}
+                    <h3 className="card-t" title={a.placement || undefined}>{a.name}</h3>
+                    {assetMeta(a) && <span className="spec">{assetMeta(a)}</span>}
                   </div>
                   <div className={`grid gap-x-6 gap-y-6 ${cols}`}>
                     {result.options.map((o, oi) => {
                       const fields = o.assets[a.id] || {};
                       return (
-                        <div key={oi} className={`flex flex-col gap-3.5 transition-opacity ${regenOption === oi ? 'opacity-50 pointer-events-none' : ''}`}>
-                          <div className="flex items-center justify-between">
-                            <span className={eyebrow}>{n > 1 ? `Option ${oi + 1}` : 'Copy'}</span>
-                            <button type="button" onClick={() => copy(assetText(a, fields), `${oi}-${a.id}`)} className={`flex items-center gap-1.5 px-1.5 py-1 text-xs font-semibold ${muted} hover:text-ink dark:hover:text-night-ink`}>
+                        <div key={oi} className={`flex flex-col gap-4 transition-opacity ${regenOption === oi ? 'opacity-50 pointer-events-none' : ''}`}>
+                          <div className="flex items-center justify-between border-b border-line pb-2">
+                            <span className="eyebrow">{n > 1 ? `Option ${String(oi + 1).padStart(2, '0')}` : 'Copy'}</span>
+                            <button type="button" onClick={() => copy(assetText(a, fields), `${oi}-${a.id}`)} className="btn btn-ghost btn-sm -mr-2">
                               {Icon.copy}{copied === `${oi}-${a.id}` ? 'Copied' : 'Copy'}
                             </button>
                           </div>
@@ -524,32 +492,29 @@ export default function CopyStudio() {
                             const near = f.max && !over && len >= f.max * 0.9;
                             const rows = !f.max || f.max > 120 ? 4 : f.max > 45 ? 2 : 1;
                             const pct = f.max ? Math.min(100, Math.round((len / f.max) * 100)) : 0;
-                            const weight = f.key === 'headline' ? 'text-[15px] font-bold' : f.key === 'eyebrow' || f.key === 'cta' ? 'text-[13.5px] font-semibold' : 'text-[13.5px]';
-                            const border = busy ? 'border-accent/30 opacity-60' : over ? 'border-red-400 dark:border-red-500/70' : 'border-line dark:border-night-line focus:border-accent/60 dark:focus:border-accent-light/60';
+                            const weight = f.key === 'headline' ? 'text-[15px] font-semibold tracking-[-0.01em]' : f.key === 'eyebrow' || f.key === 'cta' ? 'font-medium' : '';
+                            const state = `${over ? 'is-error' : ''} ${busy ? 'opacity-60' : ''}`;
                             const id = `f-${oi}-${a.id}-${f.key}`;
                             return (
                               <div key={f.key} className="flex flex-col gap-1.5">
                                 <div className="flex items-center justify-between gap-2">
-                                  <label htmlFor={id} className="text-xs font-bold text-[#3A3A42] dark:text-night-muted" title={f.notes || undefined}>{f.label}</label>
-                                  <div className="flex items-center gap-2.5">
+                                  <label htmlFor={id} className="field-label text-ink-2" title={f.notes || undefined}>{f.label}</label>
+                                  <div className="flex items-center gap-3">
                                     {f.max && (
-                                      <span className={`font-mono text-[11px] tabular-nums ${over ? 'text-red-600 dark:text-red-400 font-bold' : near ? 'text-amber-700 dark:text-amber-400 font-medium' : muted}`}>{len} / {f.max}</span>
+                                      <span className={`mono text-[11px] tabular-nums ${over ? 'text-danger font-semibold' : near ? 'text-warning font-medium' : 'text-ink-3'}`}>{len} / {f.max}</span>
                                     )}
-                                    <button type="button" onClick={() => handleFieldRegen(oi, a.id, f.key)} disabled={busy} title="Rewrite just this field"
-                                      className="flex items-center gap-1 px-1 py-0.5 text-xs font-semibold text-accent dark:text-accent-light hover:underline disabled:no-underline">
+                                    <button type="button" onClick={() => handleFieldRegen(oi, a.id, f.key)} disabled={busy} title="Rewrite just this field" className="btn-link">
                                       {busy ? <>{Icon.spinner}<span className="sr-only">Rewriting</span></> : 'Redo'}
                                     </button>
                                   </div>
                                 </div>
                                 {rows === 1 ? (
-                                  <input id={id} value={value} onChange={(e) => handleEdit(oi, a.id, f.key, e.target.value)} disabled={busy} className={`${fieldBox} ${weight} ${border}`} />
+                                  <input id={id} value={value} onChange={(e) => handleEdit(oi, a.id, f.key, e.target.value)} disabled={busy} className={`input ${weight} ${state}`} />
                                 ) : (
-                                  <textarea id={id} value={value} onChange={(e) => handleEdit(oi, a.id, f.key, e.target.value)} disabled={busy} rows={rows} className={`${fieldBox} ${weight} ${border} resize-y`} />
+                                  <textarea id={id} value={value} onChange={(e) => handleEdit(oi, a.id, f.key, e.target.value)} disabled={busy} rows={rows} className={`textarea min-h-0 ${weight} ${state}`} />
                                 )}
                                 {f.max && (
-                                  <div className="h-[3px] rounded-sm bg-[#ECEBE7] dark:bg-night-line overflow-hidden">
-                                    <div className={`h-full rounded-sm transition-all ${over ? 'bg-red-500' : near ? 'bg-amber-500' : 'bg-meter dark:bg-night-meter'}`} style={{ width: `${pct}%` }} />
-                                  </div>
+                                  <div className={`meter ${over ? 'over' : near ? 'warn' : ''}`}><i style={{ width: `${pct}%` }} /></div>
                                 )}
                               </div>
                             );
