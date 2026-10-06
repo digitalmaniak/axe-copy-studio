@@ -1,5 +1,5 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { PROVIDERS, resolveProvider, CLAUDE_REQUEST_DEFAULTS } from '@/lib/llm';
+import { PROVIDERS, resolveProvider, CLAUDE_REQUEST_DEFAULTS, anthropicOptions } from '@/lib/llm';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -21,7 +21,7 @@ export async function POST(req) {
 
     let text = '';
     if (provider === 'claude') {
-      const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+      const client = new Anthropic(anthropicOptions());
       const msg = await client.messages.create({
         model: PROVIDERS.claude.model,
         max_tokens: 4000,
